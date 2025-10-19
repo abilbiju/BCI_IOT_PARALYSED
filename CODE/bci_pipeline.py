@@ -1,10 +1,13 @@
 """
 BCI Pipeline Orchestrator for Motor Imagery Classification
-Phase 1: Core BCI Application (Intent Layer)
+Updated for BCI Competition III Dataset 3a (4-class motor imagery)
 
 This module orchestrates the complete BCI pipeline: Data → Preprocessing → 
 Model Inference → Command Mapping. It serves as the master class that 
 coordinates all components for real-time motor imagery classification.
+
+Supports both batch processing and real-time streaming for 4-class motor imagery:
+- Left hand, Right hand, Foot, Tongue movements
 """
 
 import numpy as np

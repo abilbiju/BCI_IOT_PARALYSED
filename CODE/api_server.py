@@ -1,9 +1,11 @@
 """
 Flask API Server for BCI Motor Imagery Classification
-Phase 1: Core BCI Application (Intent Layer)
+Updated for 4-class motor imagery (BCI Competition III Dataset 3a)
 
 This module implements the Flask REST API that serves as the gateway
 for the IoT system to access BCI classification services.
+
+Supports 4-class motor imagery: left hand, right hand, foot, tongue
 """
 
 import numpy as np
@@ -18,6 +20,7 @@ from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 
 from bci_pipeline import BCIPipeline
+from motor_imagery_streamer import MotorImageryStreamer
 
 
 class BCIAPIServer:

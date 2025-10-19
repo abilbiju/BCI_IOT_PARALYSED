@@ -1,9 +1,9 @@
 """
 Training Script for EEGNet Motor Imagery Classification
-Phase 1: Core BCI Application (Intent Layer)
+Updated for unified multi-dataset training with BCI Competition III and IV data
 
 This script handles the complete training pipeline for the EEGNet model
-on motor imagery data from the BCI Competition IV dataset.
+on motor imagery data from multiple BCI competition datasets.
 """
 
 import numpy as np
@@ -21,7 +21,7 @@ from tensorflow.keras.callbacks import (
     TensorBoard, CSVLogger
 )
 
-from data_loader import BCIDataLoader
+from unified_bci_loader import UnifiedBCIDataLoader
 from eegnet_model import EEGNet
 
 
@@ -40,6 +40,8 @@ class EEGNetTrainer:
         Args:
             config_path: Path to configuration YAML file
         """
+        self.config_path = config_path  # Store config path for later use
+        
         with open(config_path, 'r') as file:
             self.config = yaml.safe_load(file)
         
@@ -70,7 +72,8 @@ class EEGNetTrainer:
         self.logger = logging.getLogger(__name__)
         
         # Initialize components
-        self.data_loader = BCIDataLoader(config_path)
+        # Initialize unified data loader for multi-dataset support
+        self.data_loader = UnifiedBCIDataLoader(config_path)
         self.eegnet = EEGNet(config_path)
         
         # Training state
@@ -83,46 +86,52 @@ class EEGNetTrainer:
     
     def load_and_prepare_data(self) -> Dict[str, np.ndarray]:
         """
-        Load and prepare data for training.
+        Load and prepare data for training using unified multi-dataset loader.
         
         Returns:
             Dictionary containing train/validation/test splits
         """
-        self.logger.info("Loading and preparing data for training...")
+        self.logger.info("Loading and preparing data using unified multi-dataset loader...")
         
-        # Load and process all data
-        X, y = self.data_loader.load_and_process_all_data()
-        
-        # Prepare data splits
-        self.data_splits = self.data_loader.prepare_for_training(
-            X, y,
-            validation_split=self.training_config['validation_split'],
-            test_split=0.1,  # 10% for testing
-            random_state=42
-        )
-        
-        # Apply data augmentation if enabled
-        if self.training_config['augmentation']['enabled']:
-            self.logger.info("Applying data augmentation...")
+        try:
+            # Use unified loader to prepare all data splits with enhanced augmentation
+            data_splits = self.data_loader.prepare_for_training(augment_data=True)
             
-            X_train_aug, y_train_aug = self.data_loader.augment_data(
-                self.data_splits['X_train'],
-                self.data_splits['y_train'],
-                noise_std=self.training_config['augmentation']['noise_std'],
-                time_shift_range=self.training_config['augmentation']['time_shift_range']
-            )
+            # Log dataset information
+            dataset_info = data_splits['dataset_info']
+            self.logger.info(f"Combined dataset loaded successfully:")
+            self.logger.info(f"  - Total epochs: {dataset_info['total_epochs']}")
+            self.logger.info(f"  - Channels: {dataset_info['n_channels']}")
+            self.logger.info(f"  - Samples per epoch: {dataset_info['n_samples']}")
+            self.logger.info(f"  - Classes: {dataset_info['n_classes']}")
             
-            self.data_splits['X_train'] = X_train_aug
-            self.data_splits['y_train'] = y_train_aug
+            # Extract data splits
+            X_train = data_splits['X_train']
+            y_train = data_splits['y_train']
+            X_val = data_splits['X_val']
+            y_val = data_splits['y_val']
+            X_test = data_splits['X_test']
+            y_test = data_splits['y_test']
+            
+            self.logger.info(f"Data shapes:")
+            self.logger.info(f"  - Training: X={X_train.shape}, y={y_train.shape}")
+            self.logger.info(f"  - Validation: X={X_val.shape}, y={y_val.shape}")
+            self.logger.info(f"  - Test: X={X_test.shape}, y={y_test.shape}")
+            
+            return {
+                'X_train': X_train,
+                'y_train': y_train,
+                'X_val': X_val,
+                'y_val': y_val,
+                'X_test': X_test,
+                'y_test': y_test,
+                'dataset_info': dataset_info
+            }
+            
+        except Exception as e:
+            self.logger.error(f"Failed to load unified datasets: {e}")
+            raise RuntimeError(f"Data loading failed: {e}")
         
-        # Log final data shapes
-        self.logger.info("Final data shapes:")
-        for split_name, data in self.data_splits.items():
-            if isinstance(data, np.ndarray):
-                self.logger.info(f"  {split_name}: {data.shape}")
-        
-        return self.data_splits
-    
     def create_callbacks(self) -> list:
         """
         Create training callbacks for monitoring and optimization.
@@ -141,10 +150,10 @@ class EEGNetTrainer:
         )
         callbacks.append(early_stopping)
         
-        # Model checkpoint
+        # Model checkpoint - use .keras extension
         checkpoint_path = os.path.join(
             self.config['paths']['model_save_path'],
-            'best_' + self.config['paths']['model_filename']
+            'best_' + self.config['paths']['model_filename'].replace('.h5', '.keras')
         )
         model_checkpoint = ModelCheckpoint(
             checkpoint_path,
@@ -274,9 +283,18 @@ class EEGNetTrainer:
         # Calculate additional metrics
         from sklearn.metrics import classification_report, confusion_matrix
         
+        # Determine class names based on number of classes
+        n_classes = data_splits['y_test'].shape[1]
+        if n_classes == 4:
+            target_names = ['Left Hand', 'Right Hand', 'Foot', 'Tongue']
+        elif n_classes == 2:
+            target_names = ['Left Hand', 'Right Hand']
+        else:
+            target_names = [f'Class {i}' for i in range(n_classes)]
+        
         classification_rep = classification_report(
             test_true_classes, test_pred_classes,
-            target_names=['Left Hand', 'Right Hand'],
+            target_names=target_names,
             output_dict=True
         )
         
@@ -289,13 +307,15 @@ class EEGNetTrainer:
         self.logger.info(f"  Confusion Matrix:\n{confusion_mat}")
         
         evaluation_results = {
-            'test_loss': test_loss,
-            'test_accuracy': test_accuracy,
+            'test_loss': float(test_loss),
+            'test_accuracy': float(test_accuracy),
             'classification_report': classification_rep,
             'confusion_matrix': confusion_mat.tolist(),
             'predictions': test_predictions.tolist(),
             'true_classes': test_true_classes.tolist(),
-            'predicted_classes': test_pred_classes.tolist()
+            'predicted_classes': test_pred_classes.tolist(),
+            'n_classes': n_classes,
+            'target_names': target_names
         }
         
         # Save evaluation results
@@ -382,7 +402,7 @@ class EEGNetTrainer:
         # 5. Save training summary
         training_summary = {
             'config': self.config,
-            'data_info': self.data_loader.get_data_info(),
+            'data_info': data_splits.get('dataset_info', {}),
             'training_history': training_history,
             'evaluation_results': evaluation_results,
             'training_completed': datetime.now().isoformat()
@@ -417,6 +437,7 @@ def main():
         print("\n" + "=" * 40)
         print("Training completed successfully!")
         print(f"Final test accuracy: {results['evaluation_results']['test_accuracy']:.4f}")
+        print(f"Number of classes: {results['evaluation_results']['n_classes']}")
         print(f"Model saved to: {trainer.config['paths']['model_save_path']}")
         
     except Exception as e:

@@ -132,16 +132,16 @@ cython_debug/
 # Machine Learning & AI
 # ========================
 # Model files
-models/
-*.h5
-*.keras
-*.pkl
-*.joblib
-*.onnx
-*.pb
+# models/
+# *.h5
+# *.keras
+# *.pkl
+# *.joblib
+# *.onnx
+# *.pb
 
 # TensorBoard logs
-logs/
+# logs/
 runs/
 tensorboard/
 
@@ -153,7 +153,7 @@ checkpoints/
 # Training data and results
 data/
 datasets/
-results/
+results/accuracy_tests/
 outputs/
 
 # ========================
@@ -240,7 +240,7 @@ Temporary Items
 *.swo
 
 # Application logs
-logs/
+# ./logs/
 *.log.*
 
 # ========================

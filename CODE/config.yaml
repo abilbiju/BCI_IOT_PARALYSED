@@ -27,21 +27,8 @@ eeg:
       18,
       19,
       20,
-      21
-      30,
-      31,
-      32,
-      33,
-      34,
-      35,
-      36,
-      37,
-      38,
-      39,
-      40,
-      41,
-      42,
-    ] # All EEG channels for unified dataset processing
+      21,
+    ] # All 22 EEG channels for unified dataset processing
   epoch_length: 4.0 # seconds - motor imagery trial length (3s cue + 1s buffer)
   baseline_length: 0.5 # seconds - pre-stimulus baseline for normalization
   overlap: 0.0 # seconds - overlap between epochs

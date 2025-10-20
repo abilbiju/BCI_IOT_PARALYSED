@@ -1,0 +1,97 @@
+{
+  "timestamp": "20251020_194555",
+  "overall_accuracy": 0.7636363636363637,
+  "per_class_accuracy": {
+    "Left Hand": 0.7555555555555555,
+    "Right Hand": 0.0,
+    "Foot": 0.0,
+    "Tongue": 1.0
+  },
+  "precision": 0.6934889434889434,
+  "recall": 0.7636363636363637,
+  "f1_score": 0.7100032583903552,
+  "cohen_kappa": 0.5781710914454278,
+  "confusion_matrix": [
+    [
+      34,
+      0,
+      0,
+      11
+    ],
+    [
+      1,
+      0,
+      0,
+      6
+    ],
+    [
+      1,
+      0,
+      0,
+      7
+    ],
+    [
+      0,
+      0,
+      0,
+      50
+    ]
+  ],
+  "classification_report": {
+    "Left Hand": {
+      "precision": 0.9444444444444444,
+      "recall": 0.7555555555555555,
+      "f1-score": 0.8395061728395061,
+      "support": 45.0
+    },
+    "Right Hand": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 7.0
+    },
+    "Foot": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 8.0
+    },
+    "Tongue": {
+      "precision": 0.6756756756756757,
+      "recall": 1.0,
+      "f1-score": 0.8064516129032258,
+      "support": 50.0
+    },
+    "accuracy": 0.7636363636363637,
+    "macro avg": {
+      "precision": 0.40503003003003,
+      "recall": 0.4388888888888889,
+      "f1-score": 0.41148944643568297,
+      "support": 110.0
+    },
+    "weighted avg": {
+      "precision": 0.6934889434889434,
+      "recall": 0.7636363636363637,
+      "f1-score": 0.7100032583903552,
+      "support": 110.0
+    }
+  },
+  "processing_time_ms": 3.8885727272727273,
+  "confidence_stats": {
+    "mean": 0.900456428527832,
+    "std": 0.12810273468494415,
+    "min": 0.29003798961639404,
+    "max": 0.9982795715332031
+  },
+  "model_path": "models/eegnet_4class_motor_imagery.keras",
+  "data_source": "unified",
+  "test_samples": 110,
+  "realtime_simulation": {
+    "simulation_duration": 60,
+    "total_classifications": 3750,
+    "avg_processing_time_ms": 8.592658133333334,
+    "max_processing_time_ms": 15.188399999999998,
+    "throughput_hz": 116.37842265837612,
+    "avg_accuracy": 0.7629333333333334,
+    "accuracy_std": 0.13715950163546414,
+    "avg_confidence": 

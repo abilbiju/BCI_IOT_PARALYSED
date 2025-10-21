@@ -1,0 +1,153 @@
+# BCI Motor Imagery Classification Configuration
+# Updated for BCI Competition III Dataset 3a (4-class motor imagery)
+
+# EEG Data Parameters
+eeg:
+  sampling_rate: 250 # Hz - BCI Competition III Dataset 3a sampling rate
+  channels: 22 # Unified channel count for combined datasets
+  motor_imagery_channels: [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+    ] # All 22 EEG channels for unified dataset processing
+  epoch_length: 4.0 # seconds - motor imagery trial length (3s cue + 1s buffer)
+  baseline_length: 0.5 # seconds - pre-stimulus baseline for normalization
+  overlap: 0.0 # seconds - overlap between epochs
+
+  # Motor imagery specific parameters
+  motor_imagery:
+    cue_onset: 0.0 # seconds - when motor imagery cue appears (relative to trigger)
+    imagery_duration: 3.0 # seconds - duration of motor imagery task
+    classes: 4 # Number of motor imagery classes (left hand, right hand, foot, tongue)
+    class_names: ["left_hand", "right_hand", "foot", "tongue"]
+    class_mapping: { 1: 0, 2: 1, 3: 2, 4: 3 } # BCI Competition labels to model indices
+
+# Signal Preprocessing Parameters
+preprocessing:
+  # Bandpass filter for motor imagery (mu and beta rhythms)
+  bandpass:
+    low_freq: 4.0 # Hz - Lower bound
+    high_freq: 30.0 # Hz - Upper bound
+    filter_order: 4 # Butterworth filter order
+
+  # Reference method
+  reference: "CAR" # Common Average Reference
+
+  # Normalization
+  normalization: "zscore" # z-score normalization
+
+  # Artifact removal
+  artifact_threshold: 100.0 # microvolts - threshold for artifact rejection
+
+# EEGNet Model Parameters
+model:
+  # Architecture parameters
+  nb_classes: 4 # Number of motor imagery classes (left hand, right hand, foot, tongue)
+  chans: 22 # Number of channels for unified dataset
+  samples: 1000 # Samples per epoch (4 seconds at 250 Hz)
+
+  # EEGNet specific parameters
+  dropoutRate: 0.5
+  kernLength: 32 # Kernel size for temporal convolution
+  F1: 8 # Number of temporal filters
+  D: 2 # Depth multiplier (spatial filters per temporal filter)
+  F2: 16 # Number of pointwise filters (F1 * D)
+  norm_rate: 0.25 # Dropout rate for BatchNorm
+  dropoutType: "Dropout" # Can be "Dropout" or "SpatialDropout2D"
+
+# Training Parameters
+training:
+  batch_size: 16
+  epochs: 300
+  learning_rate: 0.001
+  validation_split: 0.2
+  early_stopping:
+    patience: 50
+    restore_best_weights: true
+
+  # Data augmentation
+  augmentation:
+    enabled: true
+    noise_std: 0.01 # Standard deviation for Gaussian noise
+    time_shift_range: 10 # Maximum samples to shift in time
+
+# Command Mapping (Motor Imagery Classes to IoT Commands)
+commands:
+  # Class index to command string mapping (4-class motor imagery)
+  class_mapping:
+    0: "TURN_LEFT" # Left hand motor imagery
+    1: "TURN_RIGHT" # Right hand motor imagery
+    2: "MOVE_FORWARD" # Foot motor imagery
+    3: "MOVE_BACKWARD" # Tongue motor imagery
+
+  # Extended command set for future expansion
+  extended_commands:
+    0: "FAN_OFF" # Left hand
+    1: "FAN_ON" # Right hand
+    2: "LIGHT_OFF" # Foot
+    3: "LIGHT_ON" # Tongue
+    4: "MOVE_FORWARD" # Foot (primary)
+    5: "MOVE_BACKWARD" # Tongue (primary)
+    6: "TURN_LEFT" # Left hand (primary)
+    7: "TURN_RIGHT" # Right hand (primary)
+
+# API Configuration
+api:
+  host: "localhost"
+  port: 5000
+  debug: true
+
+  # Endpoints
+  endpoints:
+    classify: "/classify"
+    status: "/status"
+    model_info: "/model_info"
+
+# File Paths
+paths:
+  # BCI Competition III Dataset 3a paths
+  bci_competition_path: "BCI/k3b/"
+  eeg_data_file: "k3b_s.txt"
+  triggers_file: "k3b_HDR_TRIG.txt"
+  labels_file: "k3b_HDR_Classlabel.txt"
+  artifacts_file: "k3b_HDR_ArtifactSelection.txt"
+
+  # Legacy NPZ support (for backward compatibility)
+  data_file: "bci_preprocessed_data.npz"
+
+  # Model and output paths
+  model_save_path: "models/"
+  model_filename: "eegnet_4class_motor_imagery.keras"
+  logs_path: "logs/"
+
+# Simulation Parameters
+simulation:
+  chunk_size: 256 # Samples per chunk (1 second)
+  stream_delay: 0.1 # Seconds between chunks
+  noise_level: 0.05 # Amplitude of simulated noise
+
+# Logging Configuration
+logging:
+  level: "INFO" # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  save_to_file: true
+  log_filename: "bci_application.log"

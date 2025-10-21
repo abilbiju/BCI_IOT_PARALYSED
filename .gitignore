@@ -1,0 +1,316 @@
+# ========================
+# BCI Dataset Files
+# ========================
+# Ignore BCI Competition dataset folder
+BCI/
+bci/
+**/BCI/
+**/bci/
+
+# Ignore preprocessed data files
+*.npz
+bci_preprocessed_data.*
+motor_imagery_preprocessed.*
+
+# ========================
+# Python Files
+# ========================
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# poetry
+poetry.lock
+
+# pdm
+.pdm.toml
+
+# PEP 582
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# ========================
+# Machine Learning & AI
+# ========================
+# Model files
+# models/
+# *.h5
+# *.keras
+# *.pkl
+# *.joblib
+# *.onnx
+# *.pb
+
+# TensorBoard logs
+# logs/
+runs/
+tensorboard/
+
+# Weights and checkpoints
+checkpoints/
+*.ckpt
+*.weights
+
+# Training data and results
+data/
+datasets/
+results/accuracy_tests/
+outputs/
+
+# ========================
+# IDE and Editor Files
+# ========================
+# VSCode
+.vscode/
+*.code-workspace
+
+# PyCharm
+.idea/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# ========================
+# Operating System Files
+# ========================
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ========================
+# Logs and Temporary Files
+# ========================
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+
+# Application logs
+# ./logs/
+*.log.*
+
+# ========================
+# Configuration Files (Sensitive)
+# ========================
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# API keys and secrets
+secrets/
+*.key
+*.pem
+*.crt
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# ========================
+# Archive and Backup Files
+# ========================
+*.zip
+*.tar.gz
+*.rar
+*.7z
+*.backup
+
+# ========================
+# Documentation Build
+# ========================
+_build/
+docs/_build/
+site/
+
+# ========================
+# Package Manager Locks
+# ========================
+yarn.lock
+package-lock.json
+Pipfile.lock
+poetry.lock
+
+# ========================
+# Custom Project Specific
+# ========================
+# BCI specific temporary files
+*.gdf.tmp
+*.cnt.tmp
+*.mrk.tmp
+
+# Experiment results
+experiments/
+analysis_results/
+
+# Configuration backups
+config_backup/
+*.yaml.bak
+*.yml.bak
+
+# Test data
+test_data/
+sample_data/
+
+# Cache directories
+cache/
+.cache/
+
+# Temporary processing files
+processing_temp/
+temp_files/
